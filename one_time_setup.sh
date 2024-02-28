@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-bash setup_docker.sh >/dev/null 2>&1
+bash setup_docker.sh
 
 echo "setting up docker completed"
 
