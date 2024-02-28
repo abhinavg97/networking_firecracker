@@ -20,7 +20,7 @@ sleep 1
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 sleep 1
-sudo groupadd docker
+sudo groupadd docker >/dev/null 2>&1
 sleep 1
 sudo usermod -aG docker $USER
 sleep 1
@@ -49,7 +49,7 @@ sleep 1
 
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-sudo groupadd docker
+sudo groupadd docker >/dev/null 2>&1
 sudo usermod -aG docker $USER
 newgrp docker
 
