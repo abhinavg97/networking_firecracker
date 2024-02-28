@@ -31,11 +31,6 @@ go build
 chmod +x firectl
 sudo cp firectl /usr/local/bin/firectl
 
-## todo: lookup the interface used by tap0 (created earlier)
-# todo: fetch ubuntu-vmlinux and ubuntu.ext4 from somewhere, alternatively create (commands later)
-# scp ubuntu.ext4 ag4786@hp115.utah.cloudlab.us:/users/ag4786/ubuntu.ext4
-# scp ubuntu-vmlinux ag4786@hp115.utah.cloudlab.us:/users/ag4786/ubuntu-vmlinux
-
 # install firecracker
 cd ~
 git clone https://github.com/firecracker-microvm/firecracker
