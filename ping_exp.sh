@@ -10,6 +10,9 @@ then
   exit 1
 fi
 
+sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via 10.10.1.1
+ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
+
 for (( TARGET_VMS=1; SB_ID<=${NUM_VMS}; TARGET_VMS++ ));
 do
     sleep 5
