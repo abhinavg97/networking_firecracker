@@ -1,26 +1,26 @@
-SOURCE_VMS=$1
-TARGET_VMS=$2
+TOTAL_SOURCE_VMS=$1
+TOTAL_TARGET_VMS=$2
 TARGET_NODE="node$3"
 SOURCE_BRIDGE_PREFIX=$4
 TARGET_BRIDGE_PREFIX=$5
 
 if [ "$#" -ne 5 ]
 then
-  echo "run like: ping_nodex.sh [SOURCE_VMS]10 [TARGET_VMS]10 [TARGET_NODE]1 [SOURCE_BRIDGE_PREFIX]192.167 [TARGET_BRIDGE_PREFIX]192.168"
+  echo "run like: ping_nodex.sh [TOTAL_SOURCE_VMS]10 [TOTAL_TARGET_VMS]10 [TARGET_NODE]1 [SOURCE_BRIDGE_PREFIX]192.167 [TARGET_BRIDGE_PREFIX]192.168"
   exit 1
 fi
 
 sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via 10.10.1.1
 ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
 
-for (( TARGET_VMS=1; TARGET_VMS<=${NUM_VMS}; TARGET_VMS++ ));
+for (( TARGET_VMS=1; TARGET_VMS<=${TOTAL_TARGET_VMS}; TARGET_VMS++ ));
 do
     sleep 5
     ## like so parallel_start_many START_VM END_VM BRIDGE_PREFIX
     ssh ag4786@${TARGET_NODE} bash parallel_start_many ${TARGET_VMS} ${TARGET_BRIDGE_PREFIX}
     sleep 5
 
-    for (( SOURCE_VMS=1; SOURCE_VMS<=${NUM_VMS}; SOURCE_VMS++ ));
+    for (( SOURCE_VMS=1; SOURCE_VMS<=${TOTAL_SOURCE_VMS}; SOURCE_VMS++ ));
     do
         bash parallel_start_many ${SOURCE_VMS} ${BRIDGE_PREFIX_SOURCE_NODE}
         pids=()
