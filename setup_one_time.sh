@@ -19,4 +19,4 @@ echo "setting up bridge and downloading firecracker and firectl binaries complet
 sudo cp server/parallel_start_many.sh /usr/local/bin/parallel_start_many
 sudo cp server/cleanup.sh /usr/local/bin/cleanup
 
-echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+echo "    StrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config
