@@ -22,12 +22,12 @@ do
 
     for (( SOURCE_VMS=1; SOURCE_VMS<=${TOTAL_SOURCE_VMS}; SOURCE_VMS++ ));
     do
-        bash parallel_start_many ${SOURCE_VMS} ${BRIDGE_PREFIX_SOURCE_NODE}
+        bash parallel_start_many ${SOURCE_VMS} ${BRIDGE_PREFIX_SOURCE}
         pids=()
         
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
         do
-            SRC_VM_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX_SOURCE_NODE} $(((2 * SRC_VM_INDEX + 1) )))"
+            SRC_VM_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX_SOURCE} $(((2 * SRC_VM_INDEX + 1) )))"
             scp -i rootfs.id_rsa ~/firecracker_networking/workloads/ping_all.sh root@$SRC_VM_IP:/ping_all.sh
             ssh -i rootfs.id_rsa root@$SRC_VM_IP ./ping_all.sh $TARGET_VMS $TARGET_BRIDGE_PREFIX &
             pids+=($!)
@@ -41,7 +41,7 @@ do
 
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
         do
-            SRC_VM_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX_SOURCE_NODE} $(((2 * SRC_VM_INDEX + 1) )))"
+            SRC_VM_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX_SOURCE} $(((2 * SRC_VM_INDEX + 1) )))"
             scp -i rootfs.id_rsa ~/firecracker_networking/workloads/collect_ping_metrics.py root@$SRC_VM_IP:/collect_ping_metrics.py
             ssh -i rootfs.id_rsa root@$SRC_VM_IP python3 collect_ping_metrics.py $TARGET_VMS >> "ping_${SOURCE_VMS}x${TARGET_VMS}_${SRC_VM_INDEX}"
             sleep 5
