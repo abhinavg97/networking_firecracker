@@ -11,7 +11,7 @@ VM_INDEX=1
 
 while [ $VM_INDEX -le $NUM_VMS ]; do
     TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
-    ping -c 100 $TUN_IP | grep rtt | awk -F'[/ ]+' '{print $8}' > ping_${VM_INDEX} &
+    ping -c 100 $TUN_IP | grep round-trip | awk -F'[/ ]+' '{print $7}' > ping_${VM_INDEX} &
     VM_INDEX=$(($VM_INDEX + 1))
 done
 
