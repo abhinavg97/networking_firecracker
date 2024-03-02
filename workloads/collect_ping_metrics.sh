@@ -1,10 +1,8 @@
-
 NUM_VMS=$1
 
 # Initialize variables
 total=0
 count=0
-
 
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++));
 do
