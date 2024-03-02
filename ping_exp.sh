@@ -29,10 +29,9 @@ do
         do
             SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * SRC_VM_INDEX + 1) )))"
             scp -i rootfs.id_rsa ~/firecracker_networking/workloads/ping_all.sh root@$SRC_VM_IP:/ping_all.sh
-            ssh -i rootfs.id_rsa root@$SRC_VM_IP ./ping_all.sh $TARGET_VMS $TARGET_BRIDGE_PREFIX &
+            ssh -i rootfs.id_rsa root@$SRC_VM_IP bash ping_all.sh $TARGET_VMS $TARGET_BRIDGE_PREFIX &
             pids+=($!)
         done
-
 
         for pid in ${pids[*]};
         do
