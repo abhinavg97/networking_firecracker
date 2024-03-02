@@ -10,7 +10,7 @@ sudo killall -s SIGKILL firectl
 
 NUM_VMS=$1
 
-if [ "$#" -ne 2 ]
+if [ "$#" -ne 1 ]
 then
   echo "Run like: cleanup.sh [NUM_VMS]125"
   exit 1

@@ -4,7 +4,7 @@ NUM_VMS=$1
 BRIDGE_PREFIX=$2
 BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
 
-if [ "$#" -ne 3 ]
+if [ "$#" -ne 2 ]
 then
   echo "Run like: parallel_start_many.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
   exit 1
