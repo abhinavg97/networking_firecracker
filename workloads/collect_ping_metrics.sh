@@ -4,16 +4,17 @@ NUM_VMS=$1
 total=0
 count=0
 
-for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++));
-do
-  file=ping_${VM_INDEX}
-  value=$(cat "$file")
-  total=$(echo "$total + $value" | bc)
-  ((count++))
+VM_INDEX=1
+while [ $VM_INDEX -le $NUM_VMS ]; do
 
+  file="ping_${VM_INDEX}"
+  value=$(cat "$file")
+  total=$((total + value))
+  count=$((count + 1))
+  VM_INDEX=$(($VM_INDEX + 1))
 done
 
-average=$(echo "scale=3; $total / $count" | bc)
+average=$((total / count))
 
 echo $average
 
