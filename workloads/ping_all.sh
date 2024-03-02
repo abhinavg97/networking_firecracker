@@ -1,23 +1,18 @@
-START_VM_NO=$1
-END_VM_NO=$2
-BRIDGE_PREFIX=$3
+NUM_VMS=$1
+BRIDGE_PREFIX=$2
 
-EXP_NO=$(($END_VM_NO - 1))
-
-
-if [ "$#" -ne 3 ]
+if [ "$#" -ne 2 ]
 then
-  echo "Run like: collect_ping_metrics.sh [START_VM_NO]1 [END_VM_NO]125 [BRIDGE_PREFIX]192.167"
+  echo "Run like: collect_ping_metrics.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
   exit 1
 fi
 
-for (( SB_ID=$START_VM_NO ; SB_ID<$END_VM_NO ; SB_ID++ ));
+for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++));
 do
-        TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * SB_ID + 1) )))"
-        ping -c 100 $TUN_IP | grep rtt > ${EXP_NO}_ping_${SB_ID} &
+        TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
+        ping -c 100 $TUN_IP | grep rtt > ping_${VM_INDEX} &
 done
-
 
 sleep 120
 
-python3 calc_ping_metrics.py $START_VM_NO $END_VM_NO
+python3 calc_ping_metrics.py $NUM_VMS

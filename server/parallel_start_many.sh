@@ -1,21 +1,20 @@
 #!/bin/bash
 
-START_VM_NO=$1
-END_VM_NO=$2
-BRIDGE_PREFIX=$3
+NUM_VMS=$1
+BRIDGE_PREFIX=$2
 BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
 
 if [ "$#" -ne 3 ]
 then
-  echo "Run like: parallel_start_many.sh [START_VM_NO]1 [END_VM_NO]125 [BRIDGE_PREFIX]192.167"
+  echo "Run like: parallel_start_many.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
   exit 1
 fi
 
-for (( SB_ID=$START_VM_NO ; SB_ID<$END_VM_NO ; SB_ID++ ));
+for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do
-        TAP_DEV="tap${SB_ID}"
-        TAP_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * SB_ID + 2) )))"
-        TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * SB_ID + 1) )))"
+        TAP_DEV="tap${VM_INDEX}"
+        TAP_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * VM_INDEX + 2) )))"
+        TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
         DNS0_IP="8.8.8.8"
 
         sudo ip tuntap add $TAP_DEV mode tap

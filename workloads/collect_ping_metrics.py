@@ -1,20 +1,15 @@
 import sys
 
-
-start = int(sys.argv[1])
-end = int(sys.argv[2])
-exp_no = end-1
-
+num_vms = int(sys.argv[1])
 avg = 0
 
-for i in range(start, end):
-    f = open(f"{exp_no}_ping_{i}", "r")
+for vm_index in range(1, num_vms+1):
+    f = open(f"ping_{vm_index}", "r")
     line = f.readline()
     met = line.strip().split('=')
     met = met[1].split('/')
     avg += float(met[1])
     f.close()
 
-avg = avg / (end-start)
-
+avg = avg / num_vms
 print(avg)

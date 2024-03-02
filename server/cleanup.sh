@@ -8,17 +8,16 @@ sudo killall -s  SIGKILL firecracker
 sleep 5
 sudo killall -s SIGKILL firectl
 
-START_VM_NO=$1
-END_VM_NO=$2
+NUM_VMS=$1
 
 if [ "$#" -ne 2 ]
 then
-  echo "Run like: cleanup.sh [START_VM_NO]1 [END_VM_NO]125"
+  echo "Run like: cleanup.sh [NUM_VMS]125"
   exit 1
 fi
 
-for (( SB_ID=$START_VM_NO ; SB_ID<$END_VM_NO ; SB_ID++ ));
+for (( VM_INDEX=1 ; VM_INDEX<$NUM_VMS ; VM_INDEX++ ));
 do
-        TAP_DEV="tap${SB_ID}"
+        TAP_DEV="tap${VM_INDEX}"
         sudo ip tuntap del $TAP_DEV mode tap
 done
