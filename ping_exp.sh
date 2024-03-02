@@ -13,7 +13,7 @@ fi
 sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via 10.10.1.1
 ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
 
-for (( TARGET_VMS=1; SB_ID<=${NUM_VMS}; TARGET_VMS++ ));
+for (( TARGET_VMS=1; TARGET_VMS<=${NUM_VMS}; TARGET_VMS++ ));
 do
     sleep 5
     ## like so parallel_start_many START_VM END_VM BRIDGE_PREFIX
