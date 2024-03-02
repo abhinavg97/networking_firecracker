@@ -35,6 +35,6 @@ sudo cp firectl /usr/local/bin/firectl
 cd ~
 git clone https://github.com/firecracker-microvm/firecracker
 cd firecracker
-tools/devtool build
+sudo tools/devtool build
 toolchain="$(uname -m)-unknown-linux-musl"
 sudo cp build/cargo_target/${toolchain}/debug/firecracker /usr/local/bin/firecracker
