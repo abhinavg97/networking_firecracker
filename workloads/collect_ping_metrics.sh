@@ -16,7 +16,7 @@ while [ $TARGET_VM_INDEX -le $NUM_VMS ]; do
   TARGET_VM_INDEX=$(($TARGET_VM_INDEX + 1))
 done
 
-average=$((total / count))
+average=$(awk "BEGIN { printf \"%.3f\", $total / $count }")
 
 echo $average
 
