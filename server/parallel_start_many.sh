@@ -10,14 +10,6 @@ then
   exit 1
 fi
 
-S3_BUCKET="spec.ccfc.min"
-TARGET="$(uname -m)"
-kv="4.14"
-
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.id_rsa" -O "rootfs.id_rsa"
-
 sudo chmod 400 rootfs.id_rsa
 
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
@@ -37,9 +29,9 @@ do
 
         nohup sudo firectl \
         --firecracker-binary=/usr/local/bin/firecracker \
-        --kernel=rootfs.vmlinux \
+        --kernel=$HOME/networking_firecracker/rootfs.vmlinux \
         --kernel-opts="init=/sbin/boottime_init panic=1 pci=off nomodules reboot=k tsc=reliable quiet i8042.nokbd i8042.noaux 8250.nr_uarts=0 ipv6.disable=1 ip=${TUN_IP}::${BRIDGE_IP}:::eth0:off:${DNS0_IP}" \
-        --root-drive=rootfs.ext4 \
+        --root-drive=$HOME/networking_firecracker/rootfs.ext4 \
         --log-level=Error \
         -l=error.log \
         --tap-device=$TAP_DEV/$TAP_MAC > /dev/null 2>&1  </dev/null &
