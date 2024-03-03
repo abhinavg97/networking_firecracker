@@ -32,6 +32,7 @@ do
         SRC_VM_INDEX=1
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * SRC_VM_INDEX + 1) )))"
         cat ~/${REPO_NAME}/workloads/ping_all.sh | ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| ping_all.sh"
+        cat ~/${REPO_NAME}/workloads/collect_ping_metrics.sh | ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| collect_ping_metrics.sh"
 
         
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
@@ -46,8 +47,6 @@ do
         do
             wait $pid
         done
-
-        cat ~/${REPO_NAME}/workloads/collect_ping_metrics.sh | ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| collect_ping_metrics.sh"
 
         sleep 30
 

@@ -12,18 +12,17 @@ BRIDGE_PREFIX=$4
 
 TARGET_VM_INDEX=1
 
-pids=()
+pids=""
 
-while [ $TARGET_VM_INDEX -le $TARGET_VMS ]; do
+while [ $TARGET_VM_INDEX -le $TARGET_VMS ]; do  
     TUN_IP="$(printf '%s.1.%s' ${BRIDGE_PREFIX} $(((2 * TARGET_VM_INDEX + 1) )))"
     ping -c 100 $TUN_IP | grep round-trip | awk -F'[/ ]+' '{print $7}' > ping_${SRC_VM_INDEX}_${TARGET_VM_INDEX}_${SOURCE_VMS}_${TARGET_VMS} &
     TARGET_VM_INDEX=$(($TARGET_VM_INDEX + 1))
-    pids+=($!)
+    pids="$pids $!"
 done
 
 sleep 120
 
-for pid in ${pids[*]};
-do
-    wait $pid
+for pid in $pids; do
+    wait "$pid"
 done
