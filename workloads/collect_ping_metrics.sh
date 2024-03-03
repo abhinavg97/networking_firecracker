@@ -1,6 +1,12 @@
 SRC_VM_INDEX=$1
 NUM_VMS=$2
 
+if [ "$#" -ne 2 ]
+then
+  echo "DO NOT RUN MANUALLY Run like: collect_ping_metrics.sh [SRC_VM_INDEX]65 [NUM_VMS]125"
+  exit 1
+fi
+
 # Initialize variables
 total=0.0
 count=0

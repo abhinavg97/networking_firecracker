@@ -2,9 +2,9 @@ SRC_VM_INDEX=$1
 NUM_VMS=$2
 BRIDGE_PREFIX=$3
 
-if [ "$#" -ne 2 ]
+if [ "$#" -ne 3 ]
 then
-  echo "Run like: collect_ping_metrics.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
+  echo "DO NOT RUN MANUALLY Run like: ping_all.sh [SRC_VM_INDEX]65 [NUM_VMS]125 [TARGET_BRIDGE_PREFIX]192.167"
   exit 1
 fi
 
