@@ -1,12 +1,12 @@
-NUM_VMS=$1
-TARGET_NODE="node$2"
-BRIDGE_PREFIX=$3
-
 if [ "$#" -ne 3 ]
 then
   echo "run like: ping_nodex.sh [NUM_VMS]10 [TARGET_NODE]1 [BRIDGE_PREFIX]192.167"
   exit 1
 fi
+
+NUM_VMS=$1
+TARGET_NODE="node$2"
+BRIDGE_PREFIX=$3
 
 for (( SB_ID=3 ; SB_ID<${NUM_VMS} ; SB_ID++ ));
 do

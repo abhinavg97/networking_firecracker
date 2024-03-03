@@ -1,12 +1,12 @@
-SRC_VM_INDEX=$1
-SOURCE_VMS=$2
-TARGET_VMS=$3
-
 if [ "$#" -ne 3 ]
 then
   echo "DO NOT RUN MANUALLY Run like: collect_ping_metrics.sh [SRC_VM_INDEX]65 [SOURCE_VMS]3 [TARGET_VMS]125"
   exit 1
 fi
+
+SRC_VM_INDEX=$1
+SOURCE_VMS=$2
+TARGET_VMS=$3
 
 # Initialize variables
 total=0.0

@@ -1,14 +1,16 @@
 #!/bin/bash
 
-NUM_VMS=$1
-BRIDGE_PREFIX=$2
-BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
-
 if [ "$#" -ne 2 ]
 then
   echo "Run like: parallel_start_many.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
   exit 1
 fi
+
+wget -P /$HOME/networking_firecracker/ -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
+
+NUM_VMS=$1
+BRIDGE_PREFIX=$2
+BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
 
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do

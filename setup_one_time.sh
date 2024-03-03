@@ -1,10 +1,10 @@
-BRIDGE_PREFIX=$1
-
 if [ "$#" -ne 1 ]
 then
   echo "Run like: one_time_setup.sh [BRIDGE_PREFIX]192.167"
   exit 1
 fi
+
+BRIDGE_PREFIX=$1
 
 bash setup/setup_docker.sh
 

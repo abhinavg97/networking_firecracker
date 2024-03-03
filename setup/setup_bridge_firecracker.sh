@@ -1,13 +1,14 @@
 S3_BUCKET="spec.ccfc.min"
 TARGET="$(uname -m)"
 kv="4.14"
-BRIDGE_PREFIX=$1
 
 if [ "$#" -ne 1 ]
 then
   echo "Run like: setup_bridge_firecracker.sh [BRIDGE_PREFIX]192.167"
   exit 1
 fi
+
+BRIDGE_PREFIX=$1
 
 wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
 wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
