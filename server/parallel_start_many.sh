@@ -10,6 +10,10 @@ then
   exit 1
 fi
 
+wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
+wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
+wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.id_rsa" -O "rootfs.id_rsa"
+
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do
         TAP_DEV="tap${VM_INDEX}"
