@@ -1,5 +1,5 @@
-sudo killall screen
-sleep 10
+# sudo killall screen
+# sleep 10
 sudo killall firecracker
 sleep 5
 sudo killall firectl
