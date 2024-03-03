@@ -10,8 +10,6 @@ then
   exit 1
 fi
 
-sudo chmod 400 rootfs.id_rsa
-
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do
         TAP_DEV="tap${VM_INDEX}"
