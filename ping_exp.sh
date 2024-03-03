@@ -58,7 +58,7 @@ do
             sleep 5
         done
 
-        ssh -i rootfs.id_rsa root@$SRC_VM_IP "ls | xargs rm -f"
+        ssh -i rootfs.id_rsa root@$SRC_VM_IP "ls ping | xargs rm -f"
 
         sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${SOURCE_VMS}
         sleep 5
