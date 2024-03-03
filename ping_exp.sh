@@ -34,7 +34,7 @@ do
             SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * SRC_VM_INDEX + 1) )))"
             cat ~/${REPO_NAME}/workloads/ping_all.sh | ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| ping_all.sh"
             # scp -i rootfs.id_rsa ~/${REPO_NAME}/workloads/ping_all.sh root@$SRC_VM_IP:~/ping_all.sh
-            ssh -i rootfs.id_rsa root@$SRC_VM_IP sh ping_all.sh $SRC_VM_INDEX $TARGET_VMS $TARGET_BRIDGE_PREFIX &
+            ssh -i rootfs.id_rsa root@$SRC_VM_IP sh ping_all.sh $SRC_VM_INDEX $SOURCE_VMS $TARGET_VMS $TARGET_BRIDGE_PREFIX &
             pids+=($!)
         done
 
@@ -43,12 +43,14 @@ do
             wait $pid
         done
 
+        sleep 30
+
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
         do
             SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * SRC_VM_INDEX + 1) )))"
             cat ~/${REPO_NAME}/workloads/collect_ping_metrics.sh | ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| collect_ping_metrics.sh"
             # scp -i rootfs.id_rsa ~/${REPO_NAME}/workloads/collect_ping_metrics.py root@$SRC_VM_IP:~/collect_ping_metrics.py
-            ssh -i rootfs.id_rsa root@$SRC_VM_IP sh collect_ping_metrics.sh $SRC_VM_INDEX $TARGET_VMS >> "ping_${SOURCE_VMS}x${TARGET_VMS}_${SRC_VM_INDEX}"
+            ssh -i rootfs.id_rsa root@$SRC_VM_IP sh collect_ping_metrics.sh $SRC_VM_INDEX $SOURCE_VMS $TARGET_VMS >> "ping_${SOURCE_VMS}x${TARGET_VMS}_${SRC_VM_INDEX}"
             sleep 5
         done
 
