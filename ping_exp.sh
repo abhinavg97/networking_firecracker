@@ -25,6 +25,8 @@ do
     for (( SOURCE_VMS=1; SOURCE_VMS<=${TOTAL_SOURCE_VMS}; SOURCE_VMS++ ));
     do
         bash parallel_start_many ${SOURCE_VMS} ${SOURCE_BRIDGE_PREFIX}
+        sleep 5
+
         pids=()
         
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
