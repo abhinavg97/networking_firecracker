@@ -1,17 +1,19 @@
-NUM_VMS=$1
+SRC_VM_INDEX=$1
+NUM_VMS=$2
 
 # Initialize variables
-total=0
+total=0.0
 count=0
 
-VM_INDEX=1
-while [ $VM_INDEX -le $NUM_VMS ]; do
+TARGET_VM_INDEX=1
 
-  file="ping_${VM_INDEX}"
+while [ $TARGET_VM_INDEX -le $NUM_VMS ]; do
+
+  file="ping_${SRC_VM_INDEX}_${TARGET_VM_INDEX}"
   value=$(cat "$file")
-  total=$((total + value))
+  total=$(awk "BEGIN { printf \"%.3f\", $total + $value }")
   count=$((count + 1))
-  VM_INDEX=$(($VM_INDEX + 1))
+  TARGET_VM_INDEX=$(($TARGET_VM_INDEX + 1))
 done
 
 average=$((total / count))
