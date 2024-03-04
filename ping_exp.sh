@@ -12,8 +12,8 @@ TARGET_BRIDGE_PREFIX=$5
 
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 
-sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via 10.10.1.1
-ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
+sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via 128.110.218.154
+ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 128.110.218.127
 
 for (( TARGET_VMS=1; TARGET_VMS<=${TOTAL_TARGET_VMS}; TARGET_VMS++ ));
 do
