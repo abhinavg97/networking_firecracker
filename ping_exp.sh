@@ -1,6 +1,6 @@
 if [ "$#" -ne 5 ]
 then
-  echo "run like: ping_nodex.sh [TOTAL_SOURCE_VMS]10 [TOTAL_TARGET_VMS]10 [TARGET_NODE_IP]128.110.218.154 [SOURCE_BRIDGE_PREFIX]192.167 [TARGET_BRIDGE_PREFIX]192.168"
+  echo "run like: ping_nodex.sh [TOTAL_SOURCE_VMS]10 [TOTAL_TARGET_VMS]10 [TARGET_NODE_IP]10.10.1.1 [SOURCE_BRIDGE_PREFIX]192.167 [TARGET_BRIDGE_PREFIX]192.168"
   exit 1
 fi
 
@@ -13,7 +13,7 @@ TARGET_BRIDGE_PREFIX=$5
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 
 sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via $TARGET_NODE
-ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 128.110.218.127
+ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
 
 for (( TARGET_VMS=1; TARGET_VMS<=${TOTAL_TARGET_VMS}; TARGET_VMS++ ));
 do
