@@ -1,12 +1,9 @@
 # sudo killall screen
 # sleep 10
-sudo killall firecracker
-sleep 5
-sudo killall firectl
-sleep 5
-sudo killall -s  SIGKILL firecracker
-sleep 5
-sudo killall -s SIGKILL firectl
+sudo killall firecracker > /dev/null 2>&1
+sudo killall firectl > /dev/null 2>&1
+sudo killall -s  SIGKILL firecracker > /dev/null 2>&1
+sudo killall -s SIGKILL firectl > /dev/null 2>&1
 
 NUM_VMS=$1
 

@@ -41,12 +41,12 @@ do
             pids+=($!)
         done
 
-        sleep 30
-
         for pid in ${pids[*]};
         do
             wait $pid
         done        
+
+        sleep 5
 
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
         do

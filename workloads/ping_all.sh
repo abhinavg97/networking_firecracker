@@ -21,8 +21,8 @@ while [ $TARGET_VM_INDEX -le $TARGET_VMS ]; do
     pids="$pids $!"
 done
 
-sleep 120
-
 for pid in $pids; do
     wait "$pid"
 done
+
+sleep 5
