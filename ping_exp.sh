@@ -10,6 +10,9 @@ TARGET_NODE="$3"
 SOURCE_BRIDGE_PREFIX=$4
 TARGET_BRIDGE_PREFIX=$5
 
+S3_BUCKET="spec.ccfc.min"
+TARGET="$(uname -m)"
+kv="4.14"
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 
 sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via $TARGET_NODE
@@ -56,7 +59,10 @@ do
         done
 
         sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${SOURCE_VMS}
-        sleep 5
+        rm rootfs.ext4
+        rm rootfs.vmlinux
+        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
+        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
     done
 
     ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${TARGET_VMS}"
