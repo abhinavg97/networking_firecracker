@@ -54,8 +54,6 @@ do
             # scp -i rootfs.id_rsa ~/${REPO_NAME}/workloads/collect_ping_metrics.py root@$SRC_VM_IP:~/collect_ping_metrics.py
             ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| collect_ping_metrics.sh" < $HOME/${REPO_NAME}/workloads/collect_ping_metrics.sh
             ssh -i rootfs.id_rsa root@$SRC_VM_IP sh collect_ping_metrics.sh $SRC_VM_INDEX $SOURCE_VMS $TARGET_VMS >> "ping_${SOURCE_VMS}x${TARGET_VMS}_${SRC_VM_INDEX}"
-            sleep 5
-            ssh -i rootfs.id_rsa root@$SRC_VM_IP "rm *"
         done
 
         sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${SOURCE_VMS}
