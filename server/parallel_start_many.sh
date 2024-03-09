@@ -38,14 +38,3 @@ do
 
         DUMMY=10
 done
-
-
-
-firectl \
-        --firecracker-binary=/usr/local/bin/firecracker \
-        --kernel=$HOME/networking_firecracker/rootfs.vmlinux \
-        --kernel-opts="init=/sbin/boottime_init panic=1 pci=off nomodules reboot=k tsc=reliable quiet i8042.nokbd i8042.noaux 8250.nr_uarts=0 ipv6.disable=1 ip=${TUN_IP}::${BRIDGE_IP}:::eth0:off:${DNS0_IP}" \
-        --root-drive=$HOME/networking_firecracker/rootfs.ext4 \
-        --log-level=Error \
-        -l=error.log \
-        --tap-device=$TAP_DEV/$TAP_MAC
