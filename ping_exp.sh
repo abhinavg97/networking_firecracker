@@ -23,14 +23,15 @@ ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 1
 
 for (( TARGET_VMS=${MIN_TARGET_VMS}; TARGET_VMS<=${TOTAL_TARGET_VMS}; TARGET_VMS++ ));
 do
+    sleep 3
     ## like so parallel_start_many START_VM END_VM BRIDGE_PREFIX
     ssh ag4786@${TARGET_NODE} bash parallel_start_many ${TARGET_VMS} ${TARGET_BRIDGE_PREFIX}
-    sleep 1
+    sleep 5
 
     for (( SOURCE_VMS=${MIN_SRC_VMS}; SOURCE_VMS<=${TOTAL_SOURCE_VMS}; SOURCE_VMS++ ));
     do
         bash parallel_start_many ${SOURCE_VMS} ${SOURCE_BRIDGE_PREFIX}
-        sleep 1
+        sleep 5
 
         pids=()
 
@@ -46,9 +47,9 @@ do
         for pid in ${pids[*]};
         do
             wait $pid
-        done        
+        done
 
-        sleep 1
+        sleep 5
 
         for (( SRC_VM_INDEX=1; SRC_VM_INDEX<=$SOURCE_VMS; SRC_VM_INDEX++ ));
         do
@@ -66,5 +67,5 @@ do
     done
 
     ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${TARGET_VMS}"
-    sleep 2
+    sleep 5
 done
