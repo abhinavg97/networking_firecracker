@@ -10,7 +10,6 @@ NUM_VMS=$1
 BRIDGE_PREFIX=$2
 BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
 
-sudo rm -rf /tmp/fcfifo*
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do
         TAP_DEV="tap${VM_INDEX}"

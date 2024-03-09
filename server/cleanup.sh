@@ -4,6 +4,7 @@ sudo killall firecracker > /dev/null 2>&1
 sudo killall firectl > /dev/null 2>&1
 sudo killall -s  SIGKILL firecracker > /dev/null 2>&1
 sudo killall -s SIGKILL firectl > /dev/null 2>&1
+sudo rm -rf /tmp/fcfifo*
 
 NUM_VMS=$1
 
