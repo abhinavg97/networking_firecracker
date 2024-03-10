@@ -38,4 +38,5 @@ do
         DUMMY=10
 done
 
-sleep 5
+sleep 2
+sleep $((2*$NUM_VMS/10))
