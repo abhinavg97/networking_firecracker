@@ -24,4 +24,4 @@ sudo chmod a+x /usr/local/bin/cleanup
 
 echo "    StrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config
 echo "    ConnectionAttempts 10" | sudo tee -a /etc/ssh/ssh_config
-echo "    ConnectTimeout 30" | sudo tee -a /etc/ssh/ssh_config
+echo "    ConnectTimeout 60" | sudo tee -a /etc/ssh/ssh_config
