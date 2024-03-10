@@ -34,7 +34,8 @@ do
         -l=error.log \
         --tap-device=$TAP_DEV/$TAP_MAC > /dev/null 2>&1  </dev/null &
 
-        sleep 2
-
+        sleep 0.01
         DUMMY=10
 done
+
+sleep 5

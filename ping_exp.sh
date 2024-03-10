@@ -30,6 +30,9 @@ do
 
     for (( SOURCE_VMS=${MIN_SRC_VMS}; SOURCE_VMS<=${TOTAL_SOURCE_VMS}; SOURCE_VMS++ ));
     do
+        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
+        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
+
         bash parallel_start_many ${SOURCE_VMS} ${SOURCE_BRIDGE_PREFIX}
         sleep 5
 
@@ -62,8 +65,6 @@ do
         sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${SOURCE_VMS}
         rm rootfs.ext4
         rm rootfs.vmlinux
-        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
-        wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
     done
 
     ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${TARGET_VMS}"
