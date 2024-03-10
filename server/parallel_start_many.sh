@@ -34,9 +34,9 @@ do
         -l=error.log \
         --tap-device=$TAP_DEV/$TAP_MAC > /dev/null 2>&1  </dev/null &
 
-        sleep 0.01
+        sleep 0.02
         DUMMY=10
 done
 
-sleep 2
+sleep 10
 sleep $((2*$NUM_VMS/10))
