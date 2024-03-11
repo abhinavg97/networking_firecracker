@@ -39,4 +39,4 @@ do
 done
 
 sleep 10
-sleep $((2*$NUM_VMS))
+sleep $((2*$NUM_VMS/10))
