@@ -47,6 +47,7 @@ do
                 if [ $? -eq 0 ]; then
                     break
                 else
+                    echo "Retrying to ssh root@$SRC_VM_IP ..."
                     sleep 1
                 fi
             done
