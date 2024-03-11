@@ -43,6 +43,7 @@ do
             SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * SRC_VM_INDEX + 1) )))"
             # scp -i rootfs.id_rsa ~/${REPO_NAME}/workloads/ping_all.sh root@$SRC_VM_IP:~/ping_all.sh
             ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "cat >| ping_all.sh" < $HOME/${REPO_NAME}/workloads/ping_all.sh
+            until !!; do sleep 1 ; done
             ssh -i rootfs.id_rsa root@$SRC_VM_IP sh ping_all.sh $SRC_VM_INDEX $SOURCE_VMS $TARGET_VMS $TARGET_BRIDGE_PREFIX &
             pids+=($!)
         done
