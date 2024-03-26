@@ -71,7 +71,7 @@ do
 
     average=$(bc <<< "scale=5; $total / $CONST_VMS")
 
-    echo $average >> iperf_${CONST_VMS}
+    echo $average > iperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
     rm rootfs.ext4
