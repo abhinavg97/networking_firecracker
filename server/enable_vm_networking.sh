@@ -6,7 +6,7 @@ fi
 
 NUM_VMS=$1
 BRIDGE_PREFIX=$2
-[ -z "$REPO_NAME" ] && export REPO_NAME=$(basename `git rev-parse --show-toplevel`)
+REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 
 for (( VM_INDEX=1; VM_INDEX<=${NUM_VMS}; VM_INDEX++ ));
 do
