@@ -66,7 +66,7 @@ do
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
         value=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat iperf_${VM_INDEX}" | grep receiver | awk '{print $7}')
-        total=$((total + value))
+        total=$(echo "$total + $value" | bc)
     done
 
     average=$(bc <<< "scale=5; $total / $CONST_VMS")
