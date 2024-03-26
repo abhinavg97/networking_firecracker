@@ -26,7 +26,7 @@ do
     sleep 3
     ssh ag4786@${TARGET_NODE} bash parallel_start_many ${CONST_VMS} ${TARGET_BRIDGE_PREFIX}
     sleep 5
-    ssh ag4786@${TARGET_NODE} bash enable_vm_networking ${CONST_VMS} ${TARGET_BRIDGE_PREFIX}
+    ssh ag4786@${TARGET_NODE} "export REPO_NAME='${REPO_NAME}'; bash enable_vm_networking ${CONST_VMS} ${TARGET_BRIDGE_PREFIX}"
 
     wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
     wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
