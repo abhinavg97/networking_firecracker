@@ -1,6 +1,6 @@
 if [ "$#" -ne 1 ]
 then
-  echo "Run like: one_time_setup.sh [BRIDGE_PREFIX]192.167"
+  echo "Run like: setup_one_time.sh [BRIDGE_PREFIX]192.167"
   exit 1
 fi
 
@@ -26,7 +26,21 @@ sudo chmod a+x /usr/local/bin/enable_vm_networking
 
 ## Enable networking inside the VM
 
+# Configure packet forwarding
 echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+
+# Avoid "nf_conntrack: table full, dropping packet"
+sudo sysctl -w net.ipv4.netfilter.ip_conntrack_max=99999999
+
+# Avoid "neighbour: arp_cache: neighbor table overflow!"
+sudo sysctl -w net.ipv4.neigh.default.gc_thresh1=1024
+sudo sysctl -w net.ipv4.neigh.default.gc_thresh2=2048
+sudo sysctl -w net.ipv4.neigh.default.gc_thresh3=4096
+
+# Add CAP_NET_ADMIN to firecracker (for TUNSETIFF ioctl)
+sudo setcap cap_net_admin=eip firecracker
+
+# enable the changes
 sudo sysctl -p
 
 ## Enable internet access in the VM via nat
