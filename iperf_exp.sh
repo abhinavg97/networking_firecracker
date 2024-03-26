@@ -77,6 +77,6 @@ do
     rm rootfs.ext4
     rm rootfs.vmlinux
 
-    ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${TARGET_VMS}"
+    ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}"
     sleep 5
 done
