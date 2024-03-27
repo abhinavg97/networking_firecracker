@@ -45,6 +45,12 @@ do
         ## add iperf3 package in the vm if it does not exist
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "apk info iperf3 >/dev/null 2>&1 || apk add iperf3"
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "apk info iperf3 >/dev/null 2>&1 || apk add iperf3"
+    done
+
+    for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
+    do
+        SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
+        DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start iperf3 server in the target vm
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "iperf3 -s -D"  # -D option to run iperf3 in daemon mode
