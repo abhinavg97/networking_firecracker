@@ -49,14 +49,18 @@ do
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
-        SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start iperf3 server in the target vm
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "iperf3 -s -D"  # -D option to run iperf3 in daemon mode
+    done
+
+    for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
+    do
+        SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start iperf3 client in the source vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $DST_VM_IP -t 60 -f g -i 0 > iperf_${VM_INDEX}" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $DST_VM_IP -t 300 -f g -i 0 > iperf_${VM_INDEX}" &
         pids+=($!)
     done
 
