@@ -25,12 +25,13 @@ sudo ip link set br0 up
 
 # get firectl
 cd ~
-git clone https://github.com/firecracker-microvm/firectl.git
 wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzvf  go1.22.1.linux-amd64.tar.gz
 echo 'export PATH="/usr/local/go/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
+cd ~
+git clone https://github.com/firecracker-microvm/firectl.git
 cd firectl
 go build
 chmod +x firectl
