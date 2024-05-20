@@ -12,7 +12,7 @@ BRIDGE_PREFIX=$1
 OS=$2
 
 
-if ["$OS" == "alpine"]
+if [ "$OS" = "alpine" ];
 then
   wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O "rootfs.ext4"
   wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
