@@ -1,6 +1,6 @@
-if [ "$#" -ne 1 ]
+if [ "$#" -ne 2 ]
 then
-  echo "Run like: setup_one_time.sh [BRIDGE_PREFIX]192.167"
+  echo "Run like: setup_one_time.sh [BRIDGE_PREFIX]192.167 [OS]alpine,ubuntu"
   exit 1
 fi
 
