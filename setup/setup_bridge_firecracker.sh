@@ -9,10 +9,19 @@ then
 fi
 
 BRIDGE_PREFIX=$1
+OS=$2
 
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
-wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.id_rsa" -O "rootfs.id_rsa"
+
+if ["$OS" == "alpine"]
+then
+  wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O "rootfs.ext4"
+  wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
+  wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.id_rsa" -O "rootfs.id_rsa"
+else
+  wget -N -q "https://storage.googleapis.com/firecracker_data/rootfs.ext4" -O "rootfs.ext4"
+  wget -N -q "https://storage.googleapis.com/firecracker_data/rootfs.vmlinux" -O "rootfs.vmlinux"
+  wget -N -q "https://storage.googleapis.com/firecracker_data/rootfs.id_rsa" -O "rootfs.id_rsa"
+fi
 
 sudo chmod 400 rootfs.id_rsa
 
@@ -24,12 +33,6 @@ sudo ip addr add ${BRIDGE_IP}/16 dev br0
 sudo ip link set br0 up
 
 # get firectl
-cd ~
-wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzvf  go1.22.1.linux-amd64.tar.gz
-echo 'export PATH="/usr/local/go/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-
 cd ~
 git clone https://github.com/firecracker-microvm/firectl.git
 cd firectl

@@ -5,13 +5,19 @@ then
 fi
 
 BRIDGE_PREFIX=$1
+OS=$2
 
 bash setup/setup_docker.sh
 
 echo "setting up docker completed"
 
+bash setup/setup_go.sh
+echo "setting up go completed"
+
+source ~/.bashrc
+
 # the first argument is the bridge prefix like so - 192.167.1.1 or 192.168.1.1
-bash setup/setup_bridge_firecracker.sh ${BRIDGE_PREFIX}
+bash setup/setup_bridge_firecracker.sh ${BRIDGE_PREFIX} ${OS}
 
 
 echo "setting up bridge and downloading firecracker and firectl binaries completed"
