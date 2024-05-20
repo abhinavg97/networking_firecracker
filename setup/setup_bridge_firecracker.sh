@@ -2,9 +2,9 @@ S3_BUCKET="spec.ccfc.min"
 TARGET="$(uname -m)"
 kv="4.14"
 
-if [ "$#" -ne 1 ]
+if [ "$#" -ne 2 ]
 then
-  echo "Run like: setup_bridge_firecracker.sh [BRIDGE_PREFIX]192.167"
+  echo "Run like: setup_bridge_firecracker.sh [BRIDGE_PREFIX]192.167 [OS]alpine,ubuntu"
   exit 1
 fi
 
