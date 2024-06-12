@@ -33,6 +33,7 @@ sudo ip addr add ${BRIDGE_IP}/16 dev br0
 sudo ip link set br0 up
 
 # get firectl
+source ~/.bashrc # source for go
 cd ~
 git clone https://github.com/firecracker-microvm/firectl.git
 cd firectl

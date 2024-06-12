@@ -1,14 +1,21 @@
 #!/bin/bash
 
-if [ "$#" -ne 2 ]
+if [ "$#" -ne 3 ]
 then
-  echo "Run like: parallel_start_many.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167"
+  echo "Run like: parallel_start_many.sh [NUM_VMS]125 [BRIDGE_PREFIX]192.167 [OS]alpine,ubuntu"
   exit 1
 fi
 
 NUM_VMS=$1
 BRIDGE_PREFIX=$2
 BRIDGE_IP="${BRIDGE_PREFIX}.1.1"
+OS=$3
+KERNEL_OPTS=""
+
+if [ "$OS" = "alpine" ];
+then
+  KERNEL_OPTS="init=/sbin/boottime_init"
+fi
 
 for (( VM_INDEX=1; VM_INDEX<=$NUM_VMS; VM_INDEX++ ));
 do
@@ -28,7 +35,7 @@ do
         nohup sudo firectl \
         --firecracker-binary=/usr/local/bin/firecracker \
         --kernel=$HOME/networking_firecracker/rootfs.vmlinux \
-        --kernel-opts="init=/sbin/boottime_init panic=1 pci=off nomodules reboot=k tsc=reliable quiet i8042.nokbd i8042.noaux 8250.nr_uarts=0 ipv6.disable=1 ip=${TUN_IP}::${BRIDGE_IP}:::eth0:off:${DNS0_IP}" \
+        --kernel-opts="${KERNEL_OPTS} panic=1 pci=off nomodules reboot=k tsc=reliable quiet i8042.nokbd i8042.noaux 8250.nr_uarts=0 ipv6.disable=1 ip=${TUN_IP}::${BRIDGE_IP}:::eth0:off:${DNS0_IP}" \
         --root-drive=$HOME/networking_firecracker/rootfs.ext4 \
         --log-level=Error \
         -l=error.log \
