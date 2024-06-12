@@ -65,6 +65,8 @@ do
     totalsevenfive=0
     totalfivezero=0
     totaltwofive=0
+    totalavglatency=0
+    totalstddevlatency=0
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
@@ -79,6 +81,8 @@ do
         valuesevenfive=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "percentile 75.000" | awk '{print $6}')
         valuefivezero=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "percentile 50.000" | awk '{print $6}')
         valuetwofive=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "percentile 25.000" | awk '{print $6}')
+        valueavglatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'avg-latency=\K[0-9.]+')
+        valuestddevlatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'std-dev=\K[0-9.]+')
 
         totalreceived=$(echo "$totalreceived + $receivedmessages" | bc)
         totalsent=$(echo "$totalsent + $sentmessages" | bc)
@@ -90,6 +94,8 @@ do
         totalsevenfive=$(echo "$totalsevenfive + $valuesevenfive" | bc)
         totalfivezero=$(echo "$totalfivezero + $valuefivezero" | bc)
         totaltwofive=$(echo "$totaltwofive + $valuetwofive" | bc)
+        totalavglatency=$(echo "$totalavglatency + $valueavglatency" | bc)
+        totalstddevlatency=$(echo "$totalstddevlatency + $valuestddevlatency" | bc)
     done
 
     averagereceived=$(bc <<< "scale=5; $totalreceived / $CONST_VMS")
@@ -102,6 +108,8 @@ do
     averagesevenfive=$(bc <<< "scale=5; $totalsevenfive / $CONST_VMS")
     averagefivezero=$(bc <<< "scale=5; $totalfivezero / $CONST_VMS")
     averagetwofive=$(bc <<< "scale=5; $totaltwofive / $CONST_VMS")
+    averageavglatency=$(bc <<< "scale=5; $totalavglatency / $CONST_VMS")
+    averagestddevlatency=$(bc <<< "scale=5; $totalstddevlatency / $CONST_VMS")
 
     echo $averagereceived > $RESULTS/sockperf_${CONST_VMS}
     echo $averagesent >> $RESULTS/sockperf_${CONST_VMS}
@@ -113,6 +121,8 @@ do
     echo $averagesevenfive >> $RESULTS/sockperf_${CONST_VMS}
     echo $averagefivezero >> $RESULTS/sockperf_${CONST_VMS}
     echo $averagetwofive >> $RESULTS/sockperf_${CONST_VMS}
+    echo $averageavglatency >> $RESULTS/sockperf_${CONST_VMS}
+    echo $averagestddevlatency >> $RESULTS/sockperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
 
