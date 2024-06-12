@@ -23,7 +23,7 @@ function check_server_ready {
 
     for i in {1..1000}; do
         # Check if the port is open using netstat
-        if netstat -an | grep -q "$ip:$port"; then
+        if nc -z -w 2 $ip $port; then
             return 0
         fi
         # Wait for a second before the next check
