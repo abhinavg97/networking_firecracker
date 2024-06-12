@@ -29,15 +29,15 @@ do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
-        ## start iperf3 server in the target vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${SRC_VM_IP} --port 7000"  # -D option to run iperf3 in daemon mode
+        ## start sockperf server in the target vm
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${SRC_VM_IP} --port 7000"  # -D option to run sockperf in daemon mode
     done
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
-        ## start iperf3 client in the source vm
+        ## start sockperf client in the source vm
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${SRC_VM_IP} --port 7000 > sockperf_${VM_INDEX}" &
         pids+=($!)
     done
@@ -66,9 +66,8 @@ do
     averagereceived=$(bc <<< "scale=5; $totalreceived / $CONST_VMS")
     averagesent=$(bc <<< "scale=5; $totalsent / $CONST_VMS")
 
-    echo $averagereceived > iperf_${CONST_VMS}
-    echo $averagesent >> iperf_${CONST_VMS}
-
+    echo $averagereceived > sockperf_${CONST_VMS}
+    echo $averagesent >> sockperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
 
