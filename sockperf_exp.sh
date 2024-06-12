@@ -24,12 +24,14 @@ do
     bash parallel_start_many ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX} ${OS}
     pids=()
 
+    echo "Starting servers..."
+
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start sockperf server in the target vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null"
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null" &
     done
 
 
