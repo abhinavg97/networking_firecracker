@@ -17,6 +17,21 @@ RESULTS=results
 sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via $TARGET_NODE
 ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
 
+function check_server_ready {
+    local ip=$1
+    local port=$2
+
+    for i in {1..1000}; do
+        # Check if the port is open using netstat
+        if netstat -an | grep -q "$ip:$port"; then
+            return 0
+        fi
+        # Wait for a second before the next check
+        sleep 1
+    done
+    return 1
+}
+
 for (( CONST_VMS=${MIN_CONST_VMS}; CONST_VMS<=${TOTAL_CONST_VMS}; CONST_VMS++ ));
 do
     sleep 3
@@ -35,7 +50,17 @@ do
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null" &
     done
 
-    sleep 5
+    for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
+    do
+        DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
+
+        # Give the server a moment to start up and check if it's ready
+        if ! check_server_ready $DST_VM_IP 7000; then
+            echo "sockperf server on $DST_VM_IP:7000 failed to start or is not ready."
+            exit 1
+        fi
+    done
+
     echo "All servers started. Starting clients..."
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
@@ -83,6 +108,21 @@ do
         valuetwofive=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "percentile 25.000" | awk '{print $6}')
         valueavglatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'avg-latency=\K[0-9.]+')
         valuestddevlatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'std-dev=\K[0-9.]+')
+
+        # echo "-------------------------------------------------------------------------------------------PRINTING VALUES FOR VM $VM_INDEX -------------------------------------------------------------------------------------------"
+        # echo $receivedmessages
+        # echo $sentmessages
+        # echo $valuefivenine
+        # echo $valuefournine
+        # echo $valuethreenine
+        # echo $valuetwonine
+        # echo $valueonenine
+        # echo $valuesevenfive
+        # echo $valuefivezero
+        # echo $valuetwofive
+        # echo $valueavglatency
+        # echo $valuestddevlatency
+        # echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxPRINTING VALUES FOR VM $VM_INDEX xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
         totalreceived=$(echo "$totalreceived + $receivedmessages" | bc)
         totalsent=$(echo "$totalsent + $sentmessages" | bc)
