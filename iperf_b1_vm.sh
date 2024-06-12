@@ -57,7 +57,8 @@ do
 
 
         ## start iperf3 client in the source vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $TARGET_NODE -t 300 -f g -i 0 > iperf_${VM_INDEX}" &
+		PORT=$((VM_INDEX + PIVOT_PORT))
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $TARGET_NODE -t 300 -f g -i 0 -p ${PORT} > iperf_${VM_INDEX}" &
         pids+=($!)
     done
 
