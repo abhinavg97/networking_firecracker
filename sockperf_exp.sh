@@ -72,7 +72,7 @@ do
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start sockperf client in the source vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${DST_VM_IP} --port 7000 > sockperf_${CONST_VMS}_${VM_INDEX}" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${DST_VM_IP} --port 7000 --time 100 > sockperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
 
