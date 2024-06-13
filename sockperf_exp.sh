@@ -50,7 +50,7 @@ do
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start sockperf server in the target vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null &"
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null" &
     done
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
@@ -160,5 +160,7 @@ do
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
 
     ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}"
+    killall ssh
+
     sleep 5
 done
