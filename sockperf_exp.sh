@@ -50,7 +50,7 @@ do
         DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
 
         ## start sockperf server in the target vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null &"
     done
 
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
@@ -116,21 +116,6 @@ do
             echo "One of the metrics is empty."
             exit 1
         fi
-
-        # echo "-------------------------------------------------------------------------------------------PRINTING VALUES FOR VM $VM_INDEX -------------------------------------------------------------------------------------------"
-        # echo $receivedmessages
-        # echo $sentmessages
-        # echo $valuefivenine
-        # echo $valuefournine
-        # echo $valuethreenine
-        # echo $valuetwonine
-        # echo $valueonenine
-        # echo $valuesevenfive
-        # echo $valuefivezero
-        # echo $valuetwofive
-        # echo $valueavglatency
-        # echo $valuestddevlatency
-        # echo "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxPRINTING VALUES FOR VM $VM_INDEX xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
         totalreceived=$(echo "$totalreceived + $receivedmessages" | bc)
         totalsent=$(echo "$totalsent + $sentmessages" | bc)
