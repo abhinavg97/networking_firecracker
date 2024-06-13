@@ -21,12 +21,13 @@ function check_server_ready {
     local ip=$1
     local port=$2
 
-    for i in {1..1000}; do
-        # Check if the port is open using netstat
-        if nc -z -w 2 $ip $port; then
+    for i in {1..30}; do
+        # Check if the port is open using ss
+        if ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$ip "ss -ltn | grep -q ':$port'"; then
             return 0
         fi
         # Wait for a second before the next check
+        echo "Waiting for server $ip:$port to be ready... ($i)"
         sleep 1
     done
     return 1
