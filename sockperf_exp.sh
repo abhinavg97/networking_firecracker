@@ -21,9 +21,11 @@ function check_server_ready {
     local ip=$1
     local port=$2
 
+    echo "checking ip $ip:$port for liveness"
+
     for i in {1..30}; do
         # Check if the port is open using ss
-        if ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$ip "ss -ltn | grep -q ':$port'"; then
+        if nc -z -w 2 "$ip" "$port"; then
             return 0
         fi
         # Wait for a second before the next check
@@ -109,6 +111,11 @@ do
         valuetwofive=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "percentile 25.000" | awk '{print $6}')
         valueavglatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'avg-latency=\K[0-9.]+')
         valuestddevlatency=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat sockperf_${CONST_VMS}_${VM_INDEX}" | grep "avg-latency" | grep -oP 'std-dev=\K[0-9.]+')
+
+        if [ -z "$receivedmessages" ] || [ -z "$sentmessages" ] || [ -z "$valuefivenine" ] || [ -z "$valuefournine" ] || [ -z "$valuethreenine" ] || [ -z "$valuetwonine" ] || [ -z "$valueonenine" ] || [ -z "$valuesevenfive" ] || [ -z "$valuefivezero" ] || [ -z "$valuetwofive" ] || [ -z "$valueavglatency" ] || [ -z "$valuestddevlatency" ]; then 
+            echo "One of the metrics is empty."
+            exit 1
+        fi
 
         # echo "-------------------------------------------------------------------------------------------PRINTING VALUES FOR VM $VM_INDEX -------------------------------------------------------------------------------------------"
         # echo $receivedmessages
