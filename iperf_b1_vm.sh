@@ -25,9 +25,6 @@ PIVOT_PORT=7000
 for (( CONST_VMS=${MIN_CONST_VMS}; CONST_VMS<=${TOTAL_CONST_VMS}; CONST_VMS++ ));
 do
 
-    wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
-    wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
-
     bash parallel_start_many ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX} ${OS}
     sleep 5
     bash enable_vm_networking ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX}
@@ -58,7 +55,7 @@ do
 
         ## start iperf3 client in the source vm
 		PORT=$((VM_INDEX + PIVOT_PORT))
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $TARGET_NODE -t 300 -f g -i 0 -p ${PORT} > iperf_${VM_INDEX}" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $TARGET_NODE -t 300 -f g -i 0 -p ${PORT} > iperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
 
@@ -73,7 +70,7 @@ do
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
-        value=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat iperf_${VM_INDEX}" | grep receiver | awk '{print $7}')
+        value=$(ssh -i rootfs.id_rsa root@$SRC_VM_IP "cat iperf_${CONST_VMS}_${VM_INDEX}" | grep receiver | awk '{print $7}')
         total=$(echo "$total + $value" | bc)
     done
 
@@ -82,9 +79,6 @@ do
     echo $average > iperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
-    rm rootfs.ext4
-    rm rootfs.vmlinux
-
 	ssh ag4786@$TARGET_NODE "killall iperf3"
 
     sleep 5
