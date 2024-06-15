@@ -27,6 +27,9 @@ PIVOT_PORT=7000
 for (( CONST_VMS=${MIN_CONST_VMS}; CONST_VMS<=${TOTAL_CONST_VMS}; CONST_VMS++ ));
 do
 
+    wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/img/alpine_demo/fsfiles/xenial.rootfs.ext4" -O rootfs.ext4
+    wget -N -q "https://s3.amazonaws.com/$S3_BUCKET/ci-artifacts/kernels/$TARGET/vmlinux-$kv.bin" -O "rootfs.vmlinux"
+
     bash parallel_start_many ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX} ${OS}
     sleep 5
     bash enable_vm_networking ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX}
@@ -81,6 +84,9 @@ do
     echo $average > $RESULTS/iperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
+    rm rootfs.ext4
+    rm rootfs.vmlinux
+
 	ssh ag4786@$TARGET_NODE "killall iperf3"
 
     sleep 5
