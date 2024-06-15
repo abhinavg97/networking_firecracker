@@ -26,6 +26,12 @@ function check_server_ready {
         fi
         # Wait for a second before the next check
         echo "Waiting for server $ip:$port to be ready... ($i)"
+
+        if [ $i -eq 15 ]; then
+            echo "Attempt $i: Restarting sockperf server on $ip:$port"
+            ssh ag4786@$TARGET_NODE "sockperf sr --tcp --ip ${ip} --port $port --daemonize > /dev/null" &
+        fi
+
         sleep 1
     done
     return 1
