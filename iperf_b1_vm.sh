@@ -11,6 +11,8 @@ TARGET_NODE="$3"
 SOURCE_BRIDGE_PREFIX=$4
 OS=$5
 
+RESULTS=results
+
 # MAX_THROUGHPUT=5.71*1000*1000*1000 # 5.71 Gbps single vm to single vm scenario
 
 S3_BUCKET="spec.ccfc.min"
@@ -76,7 +78,7 @@ do
 
     average=$(bc <<< "scale=5; $total / $CONST_VMS")
 
-    echo $average > iperf_${CONST_VMS}
+    echo $average > $RESULTS/iperf_${CONST_VMS}
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
 	ssh ag4786@$TARGET_NODE "killall iperf3"

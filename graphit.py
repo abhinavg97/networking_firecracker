@@ -1,5 +1,5 @@
 
-path="/Users/pasithea/results_40sec/"
+path="/Users/pasithea/results_bm_bm/"
 
 x = []
 
@@ -53,8 +53,17 @@ def graphit():
 
 
 
+	print(yreceived)
+	print(ysent)
+	print(yfivenine)
+	print(yfournine)
+	print(ythreenine)
+	print(ytwonine)
+	print(yonenine)
 	print(ysevenfive)
 	print(yfivezero)
 	print(ytwofive)
+	print(yavglatency)
+	print(ystddevlatency)
 
 graphit()
