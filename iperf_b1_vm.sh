@@ -53,6 +53,7 @@ do
         ssh ag4786@$TARGET_NODE "iperf3 -s -D -p $PORT"  # -D option to run iperf3 in daemon mode
     done
 
+    SECONDS=0
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
@@ -63,6 +64,8 @@ do
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "iperf3 -c $TARGET_NODE -t 300 -f g -i 0 -p ${PORT} > iperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
+
+    echo "It took $SECONDS seconds to start all clients. Waiting for clients to finish."
 
     for pid in ${pids[*]};
     do

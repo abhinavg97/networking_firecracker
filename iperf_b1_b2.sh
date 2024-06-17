@@ -21,6 +21,7 @@ do
         ssh ag4786@$TARGET_NODE "iperf3 -s -D -p $PORT"  # -D option to run iperf3 in daemon mode
     done
 
+    SECONDS=0
     for (( PORT_INDEX=1; PORT_INDEX<=$CONST_PORTS; PORT_INDEX++ ));
     do
 		PORT=$((PORT_INDEX + PIVOT_PORT))
@@ -28,6 +29,8 @@ do
         iperf3 -c $TARGET_NODE -t 300 -f g -i 0 -p $PORT > iperf_${PORT} &
         pids+=($!)
     done
+
+    echo "It took $SECONDS seconds to start all clients. Waiting for clients to finish."
 
     for pid in ${pids[*]};
     do

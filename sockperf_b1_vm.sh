@@ -31,7 +31,7 @@ function check_server_ready {
         # Wait for a second before the next check
         echo "Waiting for server $ip:$port to be ready... ($i)"
 
-        if [ $i -eq 15 ]; then
+        if [ $i -eq 2 ]; then
             echo "Attempt $i: Restarting sockperf server on $ip:$port"
             ssh ag4786@$TARGET_NODE "sockperf sr --tcp --ip ${ip} --port $port --daemonize > /dev/null" &
         fi
@@ -70,6 +70,7 @@ do
 
     echo "All servers started. Starting clients..."
 
+    SECONDS=0
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
@@ -79,6 +80,8 @@ do
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${TARGET_NODE} --port ${PORT} --time 40 > sockperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
+
+    echo "It took $SECONDS seconds to start all clients. Waiting for clients to finish..."
 
     for pid in ${pids[*]};
     do

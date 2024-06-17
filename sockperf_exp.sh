@@ -66,6 +66,7 @@ do
 
     echo "All servers started. Starting clients..."
 
+    SECONDS=0
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
@@ -75,6 +76,8 @@ do
         ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${DST_VM_IP} --port 7000 --time 40 > sockperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
+
+    echo "It took $SECONDS seconds to start all clients. Waiting for clients to finish..."
 
     for pid in ${pids[*]};
     do
