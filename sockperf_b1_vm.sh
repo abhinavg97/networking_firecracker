@@ -1,6 +1,6 @@
-if [ "$#" -ne 6 ]
+if [ "$#" -ne 5 ]
 then
-  echo "run like: sockperf_exp.sh [MIN_CONST_VMS]1 [TOTAL_CONST_VMS]10 [TARGET_NODE_IP]10.10.1.1 [SOURCE_BRIDGE_PREFIX]192.168 [TARGET_BRIDGE_PREFIX]192.167 [OS]ubuntu"
+  echo "run like: sockperf_b1_vm.sh [MIN_CONST_VMS]1 [TOTAL_CONST_VMS]10 [TARGET_NODE_IP]10.10.1.1 [SOURCE_BRIDGE_PREFIX]192.168 [OS]ubuntu"
   exit 1
 fi
 
@@ -8,13 +8,13 @@ MIN_CONST_VMS=$1
 TOTAL_CONST_VMS=$2
 TARGET_NODE="$3"
 SOURCE_BRIDGE_PREFIX=$4
-TARGET_BRIDGE_PREFIX=$5
-OS=$6
+OS=$5
+
+PIVOT_PORT=7000
 
 REPO_NAME=$(basename `git rev-parse --show-toplevel`)
 RESULTS=results
 
-sudo ip route add ${TARGET_BRIDGE_PREFIX}.0.0/16 via $TARGET_NODE
 ssh ag4786@${TARGET_NODE} sudo ip route add ${SOURCE_BRIDGE_PREFIX}.0.0/16 via 10.10.1.2
 
 function check_server_ready {
@@ -30,6 +30,12 @@ function check_server_ready {
         fi
         # Wait for a second before the next check
         echo "Waiting for server $ip:$port to be ready... ($i)"
+
+        if [ $i -eq 15 ]; then
+            echo "Attempt $i: Restarting sockperf server on $ip:$port"
+            ssh ag4786@$TARGET_NODE "sockperf sr --tcp --ip ${ip} --port $port --daemonize > /dev/null" &
+        fi
+
         sleep 1
     done
     return 1
@@ -37,29 +43,27 @@ function check_server_ready {
 
 for (( CONST_VMS=${MIN_CONST_VMS}; CONST_VMS<=${TOTAL_CONST_VMS}; CONST_VMS++ ));
 do
-    sleep 3
-    ssh ag4786@${TARGET_NODE} bash parallel_start_many ${CONST_VMS} ${TARGET_BRIDGE_PREFIX} ${OS}
+
 
     bash parallel_start_many ${CONST_VMS} ${SOURCE_BRIDGE_PREFIX} ${OS}
     pids=()
 
     echo "Starting servers..."
 
-    for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
+    for (( PORT_INDEX=1; PORT_INDEX<=$CONST_VMS; PORT_INDEX++ ));
     do
-        DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
-
-        ## start sockperf server in the target vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$DST_VM_IP "sockperf sr --tcp --ip ${DST_VM_IP} --port 7000 --daemonize > /dev/null" &
+		PORT=$((PORT_INDEX + PIVOT_PORT))
+        ## start sockperf server in the target bare metal
+        ssh ag4786@$TARGET_NODE "sockperf sr --tcp --ip ${TARGET_NODE} --port $PORT --daemonize > /dev/null" &
     done
 
-    for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
+    for (( PORT_INDEX=1; PORT_INDEX<=$CONST_VMS; PORT_INDEX++ ));
     do
-        DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
-
         # Give the server a moment to start up and check if it's ready
-        if ! check_server_ready $DST_VM_IP 7000; then
-            echo "sockperf server on $DST_VM_IP:7000 failed to start or is not ready."
+        PORT=$((PORT_INDEX + PIVOT_PORT))
+
+        if ! check_server_ready $TARGET_NODE $PORT; then
+            echo "sockperf server on $TARGET_NODE:$PORT failed to start or is not ready."
             exit 1
         fi
     done
@@ -69,10 +73,10 @@ do
     for (( VM_INDEX=1; VM_INDEX<=$CONST_VMS; VM_INDEX++ ));
     do
         SRC_VM_IP="$(printf '%s.1.%s' ${SOURCE_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
-        DST_VM_IP="$(printf '%s.1.%s' ${TARGET_BRIDGE_PREFIX} $(((2 * VM_INDEX + 1) )))"
+		PORT=$((VM_INDEX + PIVOT_PORT))
 
         ## start sockperf client in the source vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${DST_VM_IP} --port 7000 --time 40 > sockperf_${CONST_VMS}_${VM_INDEX}" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${TARGET_NODE} --port ${PORT} --time 40 > sockperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
 
@@ -159,7 +163,7 @@ do
 
     sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}
 
-    ssh -tt ag4786@${TARGET_NODE} "sudo bash $HOME/$REPO_NAME/server/cleanup.sh ${CONST_VMS}"
+	ssh ag4786@$TARGET_NODE "killall sockperf"
     killall ssh
 
     sleep 5

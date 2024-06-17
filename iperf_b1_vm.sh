@@ -1,6 +1,6 @@
 if [ "$#" -ne 5 ]
 then
-  echo "run like: iperf_exp.sh [MIN_CONST_VMS]1 [TOTAL_CONST_VMS]10 [TARGET_NODE_IP]10.10.1.1 [SOURCE_BRIDGE_PREFIX]192.168 [OS]alpine"
+  echo "run like: iperf_b1_vm.sh [MIN_CONST_VMS]1 [TOTAL_CONST_VMS]10 [TARGET_NODE_IP]10.10.1.1 [SOURCE_BRIDGE_PREFIX]192.168 [OS]alpine"
   exit 1
 fi
 
