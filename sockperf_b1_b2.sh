@@ -68,7 +68,7 @@ do
     do
 		PORT=$((PORT_INDEX + PIVOT_PORT))
         ## start sockperf client in the source machine
-        sockperf ping-pong --tcp --ip ${TARGET_NODE} --port $PORT --time 40 > $TEMP/sockperf_${CONST_PORTS}_${PORT} &
+        sockperf ping-pong --tcp --ip ${TARGET_NODE} --port $PORT --time 40 --msg-size 1024 > $TEMP/sockperf_${CONST_PORTS}_${PORT} &
         pids+=($!)
     done
 

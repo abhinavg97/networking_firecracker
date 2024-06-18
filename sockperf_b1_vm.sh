@@ -77,7 +77,7 @@ do
 		PORT=$((VM_INDEX + PIVOT_PORT))
 
         ## start sockperf client in the source vm
-        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${TARGET_NODE} --port ${PORT} --time 40 > sockperf_${CONST_VMS}_${VM_INDEX}" &
+        ssh -i $HOME/$REPO_NAME/rootfs.id_rsa root@$SRC_VM_IP "sockperf ping-pong --tcp --ip ${TARGET_NODE} --port ${PORT} --time 40 --msg-size 1024 > sockperf_${CONST_VMS}_${VM_INDEX}" &
         pids+=($!)
     done
 

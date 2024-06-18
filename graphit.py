@@ -1,5 +1,5 @@
 
-path="/Users/pasithea/results_bm_bm/"
+path="/Users/pasithea/results_bm_vm/"
 
 x = []
 
